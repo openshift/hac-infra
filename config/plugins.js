@@ -21,15 +21,15 @@ module.exports = [
           type: 'console.navigation/href',
           properties: {
             href: '/infra',
-            name: 'Infra Home'
-          }
-        }
+            name: 'Infra Home',
+          },
+        },
       ],
     },
     {
       exposes: {
         init: resolve(__dirname, '../src/PluginEntry/PluginEntry.tsx'),
       },
-    }
-  )
+    },
+  ),
 ];
