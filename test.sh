@@ -1,4 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-echo Write some tests!
+yarn prod
+yarn test
+yarn lint
