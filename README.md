@@ -29,12 +29,17 @@ yarn dev:federated
 
 ### Variables
 
-* BETA - to switch between stable and beta releases
+* BETA - to switch between stable and beta releases (TRUE | FALSE)
+    * A more volatile part of staging or prod -- used to test out on more official setups (SSO, chrome framework, etc) but without making it an official aspect of that setup; a step before a release
 * ENVIRONMENT
-  * stage - default environment, it will use stage API
-  * prod - production environment, it will use production API
-* API_PORT - if you want to run your API locally set this variable to whichever port you need, also please change your API url in /config/dev.webpack.config.js
-* ~~CONFIG_PORT - if you want to run navigation config locally you can pass this variable and see your changes~~ Currently disabled while a bug is being fixed
+  * **stage** - default environment, it will use stage API
+  * **prod** - production environment, it will use production API
+* INSIGHTS_CHROME
+  * Used to allow you to run a local version of the ConsoleDot Chrome (navigation, masthead, etc)
+  * This variable is intended to point at the build directory where https://github.com/RedHatInsights/insights-chrome is running locally
+    * Using `npm run watch` to start it
+  * Using `export INSIGHTS_CHROME=$PWD` in the build folder, you can provide that variable to this plugins start (`yarn dev`) command:
+    * `INSIGHTS_CHROME=<the path> yarn dev`
 
 ### Proxies & etc/hosts
 

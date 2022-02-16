@@ -12,23 +12,11 @@ const webpackProxy = {
   useProxy: true,
   env,
   appUrl: process.env.BETA ? '/beta/hac/infra' : '/hac/infra',
-  standalone: Boolean(process.env.STANDALONE),
   ...(process.env.INSIGHTS_CHROME && {
     localChrome: process.env.INSIGHTS_CHROME,
   }),
   client: {
     overlay: false,
-  },
-  routes: {
-    // first part is the plugin URL, host is your localhost URL with port
-    ...(process.env.API_PORT && {
-      '/api/hac/infra': { host: `http://localhost:${process.env.API_PORT}` },
-    }),
-    ...(process.env.CONFIG_PORT && {
-      [`${process.env.BETA ? '/beta' : ''}/config`]: {
-        host: `http://localhost:${process.env.CONFIG_PORT}`,
-      },
-    }),
   },
 };
 
