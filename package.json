@@ -1,0 +1,42 @@
+{
+  "name": "hac-infra",
+  "version": "0.0.1",
+  "description": "HAC Infrastructure Plugin",
+  "scripts": {
+    "prod": "NODE_ENV=production webpack --config config/prod.webpack.config.js",
+    "dev": "BETA=true webpack serve --config config/dev.webpack.config.js",
+    "dev:federated": "BETA=true fec static --config config/dev.webpack.config.js",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --color",
+    "lint:fix": "yarn lint --fix",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@patternfly/react-core": "^4.192.15",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^1.2.1",
+    "@redhat-cloud-services/frontend-components-config": "^4.5.6",
+    "@redhat-cloud-services/frontend-components-config-utilities": "^1.5.9",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.2",
+    "@types/jest": "^27.4.0",
+    "@types/react": "^17.0.39",
+    "@typescript-eslint/eslint-plugin": "^5.11.0",
+    "@typescript-eslint/parser": "^5.11.0",
+    "eslint": "^8.9.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "jest": "^27.4.2",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.5.5",
+    "webpack": "^5.68.0",
+    "webpack-bundle-analyzer": "^4.5.0"
+  },
+  "insights": {
+    "appname": "hac-infra"
+  },
+  "license": "Apache-2.0",
+  "private": true
+}

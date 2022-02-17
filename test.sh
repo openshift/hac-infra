@@ -1,4 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-echo Write some tests!
+yarn install
+yarn prod
+yarn test
+yarn lint
