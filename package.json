@@ -4,6 +4,7 @@
   "description": "HAC Infrastructure Plugin",
   "scripts": {
     "prod": "NODE_ENV=production webpack --config config/prod.webpack.config.js",
+    "coverage": "jest --coverage --runInBand --detectOpenHandles --forceExit",
     "dev": "BETA=true webpack serve --config config/dev.webpack.config.js",
     "dev:federated": "BETA=true fec static --config config/dev.webpack.config.js",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --color",
