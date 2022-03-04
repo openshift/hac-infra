@@ -1,6 +1,6 @@
 module.exports = {
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.js', '!src/**/stories/*'],
+  collectCoverageFrom: ['src/**/*.tsx', 'src/**/*.ts', '!src/entry.ts'],
   coverageDirectory: './coverage/',
   moduleNameMapper: {
     '\\.(css|scss)$': '<rootDir>/__mocks__/styleMock.js',
