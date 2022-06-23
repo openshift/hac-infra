@@ -4,7 +4,15 @@ Hybrid Application Console Infrastructure repository
 
 ## Local Development
 
-Since the plugin is not served directly from console.redhat.com you have to run webpack proxy in order to properly develop locally. You have two options
+Since the plugin is not served directly from console.redhat.com you have to run webpack proxy in order to properly develop locally.
+
+First, run
+
+```
+yarn install
+```
+
+Then you have two options
 
 * With hac-core served from CDN - if you want to test your changes just in your plugin
 * With hac-core locally - if you want to add new plugin or change how navigation is treated.
