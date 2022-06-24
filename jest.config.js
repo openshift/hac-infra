@@ -10,5 +10,5 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
   },
-  transformIgnorePatterns: ['/node_modules/(?!@redhat-cloud-services)', '/node_modules/(?!@patternfly)'],
+  transformIgnorePatterns: ['/node_modules/(?!@openshift|@patternfly|@redhat-cloud-services|lodash-es)'],
 };
