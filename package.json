@@ -3,13 +3,21 @@
   "version": "0.0.1",
   "description": "HAC Infrastructure Plugin",
   "scripts": {
-    "prod": "NODE_ENV=production webpack --config config/prod.webpack.config.js",
+    "analyze": "NODE_ENV=production webpack --config config/prod.webpack.config.js --env analyze=true",
+    "build": "NODE_ENV=production webpack --config config/prod.webpack.config.js",
     "coverage": "jest --coverage --runInBand --detectOpenHandles --forceExit",
-    "dev": "BETA=true webpack serve --config config/dev.webpack.config.js",
-    "dev:federated": "BETA=true fec static --config config/dev.webpack.config.js",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --color",
-    "lint:fix": "yarn lint --fix",
-    "test": "jest"
+    "deploy": "npm-run-all build lint test",
+    "lint": "npm-run-all lint:*",
+    "lint:ts": "eslint . --ext .js,.jsx,.ts,.tsx --color",
+    "lint:ts:fix": "npm run lint:ts -- --fix",
+    "lint:sass": "stylelint 'src/**/*.scss' --config .stylelintrc.json",
+    "start": "webpack serve --config config/dev.webpack.config.js",
+    "start:beta": "BETA=true npm start",
+    "start:federated": "BETA=true fec static --config config/dev.webpack.config.js",
+    "start:prod": "ENVIRONMENT=prod npm run start",
+    "start:prod:beta": "ENVIRONMENT=prod npm run start:beta",
+    "test": "jest",
+    "verify": "npm-run-all build lint coverage"
   },
   "dependencies": {
     "@patternfly/react-core": "^4.192.15",
@@ -17,6 +25,7 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "@openshift/dynamic-plugin-sdk-webpack": "^1.0.0-alpha2",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^1.2.1",
     "@redhat-cloud-services/frontend-components-config": "^4.5.6",
     "@redhat-cloud-services/frontend-components-config-utilities": "^1.5.9",
@@ -30,6 +39,10 @@
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.4.2",
+    "npm-run-all": "4.1.5",
+    "stylelint": "13.13.1",
+    "stylelint-config-recommended-scss": "4.2.0",
+    "stylelint-scss": "3.19.0",
     "ts-jest": "^27.1.3",
     "typescript": "^4.5.5",
     "webpack": "^5.68.0",

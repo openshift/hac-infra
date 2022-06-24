@@ -2,29 +2,33 @@
 
 Hybrid Application Console Infrastructure repository
 
-## Local Development
+## Run with webpack proxy
 
-Since the plugin is not served directly from console.redhat.com you have to run webpack proxy in order to properly develop locally. You have two options
+Since the plugin is not served directly from console.redhat.com you have to run webpack proxy in order to properly develop locally.
 
-* With hac-core served from CDN - if you want to test your changes just in your plugin
-* With hac-core locally - if you want to add new plugin or change how navigation is treated.
+### Update `/etc/hosts`
 
-### With hac-core served from CDN (default)
-
-Once your plugin has been enabled in hac-core and promoted to at least stage environment you can start serving hac-core from CDN. You can just run
+To use webpack proxy you need to append this to your `/etc/hosts` for auth:
 
 ```
-yarn dev
+127.0.0.1 prod.foo.redhat.com
+127.0.0.1 stage.foo.redhat.com
 ```
 
-Note: This will require the internal VPN.
+### Run plugin locally and see the UI in the browser
 
-### With hac-core locally (advanced)
+1. ```npm install```
 
-In order to run hac-core and your plugin together, you will have to pull https://github.com/openshift/hac-core repository, install all dependencies and follow [dynamic plugins](https://github.com/openshift/hac-core#dynamic-plugins). Once hac-core is running you'll have to run your plugin in federated mode.
+2. ```npm run start:beta``` or ```npm run start:prod:beta```
+
+3. Open the URL listed in the terminal output.
+
+### Run plugin with hac-core locally
+
+In order to run hac-core and the hac-infra plugin together, you will have to pull the https://github.com/openshift/hac-core repository, install all dependencies and run `yarn dev` or `ENVIRONMENT=prod yarn dev` from the `frontend/` directory. Once hac-core is running you'll have to run the hac-infra plugin in federated mode as follows:
 
 ```
-yarn dev:federated
+npm run start:federated
 ```
 
 ### Variables
@@ -40,29 +44,6 @@ yarn dev:federated
     * Using `npm run watch` to start it
   * Using `export INSIGHTS_CHROME=$PWD` in the build folder, you can provide that variable to this plugins start (`yarn dev`) command:
     * `INSIGHTS_CHROME=<the path> yarn dev`
-
-### Proxies & etc/hosts
-
-The proxy set up in the webpack assumes you have the following entries in your /etc/hosts file (mac/linux):
-
-```
-127.0.0.1	prod.foo.redhat.com
-127.0.0.1	stage.foo.redhat.com
-```
-
-## Extension properties
-
-This repository is using [@redhat-cloud-services/frontend-components-config-utilities/extensions-plugin](https://github.com/RedHatInsights/frontend-components/tree/master/packages/config-utils#extensions-plugin) to bootstrap the plugin, it wraps the plugin entry with specific function and generates plugin manifest.
-
-Using this methodology you can add routes & navigation in `config/plugins.js`. There is limited support in HAC-Core today for extensions as use-cases grow.
-
-## Building the output
-
-Production build is available via the yarn command:
-
-```
-yarn prod
-```
 
 ## Folder Structure Design
 

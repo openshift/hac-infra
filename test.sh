@@ -1,10 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-yarn install
-yarn prod
-yarn coverage
-yarn lint
+npm install
+npm run verify
 
 curl -Os https://uploader.codecov.io/latest/linux/codecov
 chmod +x codecov
