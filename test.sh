@@ -1,11 +1,11 @@
 #!/bin/bash
 set -euo pipefail
+set +x
 
 yarn install
 yarn prod
 yarn coverage
 yarn lint
 
-curl -Os https://uploader.codecov.io/latest/linux/codecov
-chmod +x codecov
-./codecov -t ${CODECOV_TOKEN} --dir ./coverage
+# Upload code coverage
+./prow-codecov.sh 2>/dev/null
