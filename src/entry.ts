@@ -1,1 +1,1 @@
-import('./PluginEntry');
+import('./pages/PluginEntry');
