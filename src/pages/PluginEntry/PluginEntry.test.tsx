@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { PluginEntry } from './index';
 
-test('that the header presents the welcome message', () => {
+test('that the header presents the page title', () => {
   render(<PluginEntry />);
 
-  expect(screen.getByTestId('page-header')).toHaveTextContent('Welcome to HAC-Infra!');
+  expect(screen.getByTestId('page-header')).toHaveTextContent('Workspaces');
 });
