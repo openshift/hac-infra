@@ -1,13 +1,9 @@
 import React from 'react';
-import { Button, Card, CardBody, CardFooter, CardTitle, Split, SplitItem, Text, TextContent, TextVariants } from '@patternfly/react-core';
+import { ButtonVariant, Card, CardBody, CardFooter, CardTitle, Split, SplitItem, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import img from '../../imgs/workspaces-get-started.svg';
+import { HelpTopicLink } from '../HelpTopicLink/HelpTopicLink';
 
-type WorkspacesGetStartedCardProps = {
-  isExpanded: boolean;
-  onClick: () => void;
-};
-
-const WorkspacesGetStartedCard: React.FC<WorkspacesGetStartedCardProps> = ({ isExpanded, onClick }) => (
+const WorkspacesGetStartedCard: React.FC = () => (
   <Card>
     <Split>
       <SplitItem className="pf-u-my-lg pf-u-ml-lg pf-u-display-none pf-u-display-block-on-md">
@@ -26,9 +22,10 @@ const WorkspacesGetStartedCard: React.FC<WorkspacesGetStartedCardProps> = ({ isE
           </CardBody>
           <CardFooter>
             <Text component={TextVariants.p}>
-              <Button variant="secondary" aria-expanded={isExpanded} onClick={onClick}>
+              {/* TODO: correct topicId once new help topic is created per https://github.com/RedHatInsights/quickstarts/blob/main/docs/help-topics/README.md */}
+              <HelpTopicLink topicId="app-view" buttonVariant={ButtonVariant.secondary}>
                 Learn more
-              </Button>
+              </HelpTopicLink>
             </Text>
           </CardFooter>
         </TextContent>

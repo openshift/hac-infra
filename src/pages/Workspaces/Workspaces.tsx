@@ -1,14 +1,11 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { PageSection, PageSectionVariants, Text, TextContent } from '@patternfly/react-core';
-import { WorkspacesGetStartedCard, WorkspacesGetStartedDrawer } from '../../components/WorkspacesGetStarted';
+import { WorkspacesGetStartedCard } from '../../components/WorkspacesGetStarted';
+import { useQuickstartCloseOnUnmount } from '../../hooks';
 
 const Workspaces: React.FC = () => {
-  const [isExpanded, setIsExpanded] = React.useState(false);
-
-  const onClick = () => {
-    setIsExpanded(!isExpanded);
-  };
+  useQuickstartCloseOnUnmount();
 
   const title = 'Workspaces';
 
@@ -17,18 +14,16 @@ const Workspaces: React.FC = () => {
       <Helmet>
         <title>{title}</title>
       </Helmet>
-      <WorkspacesGetStartedDrawer isExpanded={isExpanded} setIsExpanded={setIsExpanded}>
-        <PageSection variant={PageSectionVariants.light}>
-          <TextContent>
-            <Text component="h1" data-testid="page-header">
-              {title}
-            </Text>
-          </TextContent>
-        </PageSection>
-        <PageSection>
-          <WorkspacesGetStartedCard isExpanded={isExpanded} onClick={onClick} />
-        </PageSection>
-      </WorkspacesGetStartedDrawer>
+      <PageSection variant={PageSectionVariants.light}>
+        <TextContent>
+          <Text component="h1" data-testid="page-header">
+            {title}
+          </Text>
+        </TextContent>
+      </PageSection>
+      <PageSection>
+        <WorkspacesGetStartedCard />
+      </PageSection>
     </>
   );
 };
