@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: hac-infra
+objects:
+  - apiVersion: cloud.redhat.com/v1alpha1
+    kind: Frontend
+    metadata:
+      name: hac-infra
+    spec:
+      API:
+        versions:
+          - v1
+      assetsPrefix: api/plugins
+      deploymentRepo: 'http://github.com/openshift/hac-infra'
+      envName: ${ENV_NAME}
+      frontend:
+        paths:
+          - /api/plugins/hac-infra
+      image: ${IMAGE}:${IMAGE_TAG}
+      title: hac-infra
+parameters:
+  - name: IMAGE_TAG
+    value: latest
+  - name: IMAGE
+    value: quay.io/cloudservices/hac-infra-frontend
+  - name: ENV_NAME
+    value: ephem-hac
