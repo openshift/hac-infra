@@ -26,13 +26,6 @@ module.exports = {
         name: 'Workspaces',
       },
     },
-    {
-      type: 'console.navigation/href',
-      properties: {
-        href: '/workspaces',
-        name: 'Workspaces',
-      },
-    },
   ],
   sharedModules: {
     '@openshift/dynamic-plugin-sdk': { singleton: true, import: false },
