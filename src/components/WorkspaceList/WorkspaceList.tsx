@@ -12,9 +12,14 @@ const WorkspaceModel: K8sModelCommon = {
   plural: 'workspaces',
 };
 
+type LoadError = {
+  message: string;
+  status: number;
+};
+
 const WorkspaceList: React.FC = () => {
   const [listData, setListData] = React.useState<WorkspaceRowData[]>([]);
-  const [error, setError] = React.useState<string>();
+  const [error, setError] = React.useState<LoadError>();
   const [loaded, setLoaded] = React.useState<boolean>();
 
   // TODO: k8sListResourceItems should be replaced with useWatchK8sResource hook to pick up edits to workspaces, but this hook does not appear to be working as expected with KCP and needs investigation
@@ -43,7 +48,9 @@ const WorkspaceList: React.FC = () => {
         }
       })
       .catch((e) => {
-        setError(`${defaultErrorText} ${e?.message}`);
+        const err = e as LoadError;
+        err.status = e.status ?? e.response?.status;
+        setError(err);
         setLoaded(true);
       });
   }, []);
@@ -59,7 +66,8 @@ const WorkspaceList: React.FC = () => {
           columns={workspaceColumns}
           data={listData}
           loaded={loaded}
-          loadErrorDefaultText={error}
+          loadError={error}
+          loadErrorDefaultText={defaultErrorText}
           Row={WorkspaceRow}
           filters={workspaceFilters}
           emptyStateDescription="No data was retrieved" // TODO: Add check so that empty payload results in the "Get Started with Workspaces" UI
