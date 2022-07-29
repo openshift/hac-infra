@@ -3,8 +3,16 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { PluginEntry } from './index';
 
-test('that the header presents the welcome message', () => {
-  render(<PluginEntry />);
+jest.mock('react-helmet', () => ({
+  Helmet: jest.fn(() => <div data-testid="helmet" />),
+}));
 
-  expect(screen.getByTestId('page-header')).toHaveTextContent('Welcome to HAC-Infra!');
+jest.mock('../Workspaces', () => ({
+  Workspaces: jest.fn(() => <div data-testid="workspaces" />),
+}));
+
+test('that the workspaces component gets rendered', () => {
+  render(<PluginEntry />);
+  expect(screen.getByTestId('workspaces')).toBeTruthy();
+  expect(screen.getByTestId('helmet')).toBeTruthy();
 });

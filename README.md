@@ -15,6 +15,33 @@ To use webpack proxy you need to append this to your `/etc/hosts` for auth:
 127.0.0.1 stage.foo.redhat.com
 ```
 
+### Run plugin with hac-core locally
+
+In order to run hac-core and the hac-infra plugin together (needed to connect to KCP at this time):
+- Start the local kcp-proxy by cloning [https://github.com/vidyanambiar/kcp-proxy-poc](https://github.com/vidyanambiar/kcp-proxy-poc) and following the steps in the Readme. This proxy is needed as a temporary workaround for adding CORS headers to the KCP requests.
+- Pull the https://github.com/openshift/hac-core repository and install all dependencies
+- (temporary workaround) Change the following highlighted line in HAC Core's [dev webpack configuration file](https://github.com/openshift/hac-core/blob/main/frontend/config/dev.webpack.config.js):
+  ```
+  customProxy: [
+    {
+      context: (path) => path.includes('/api/k8s'),
+      target: 'http://localhost:3000', // <--- Changed line to point to local proxy
+      secure: false,
+      changeOrigin: true,
+      autoRewrite: true,
+      ws: true,
+      pathRewrite: { '^/api/k8s': '' },
+    },
+  ```
+- Run `ENVIRONMENT=prod yarn dev` from the `frontend/` directory.
+- Once hac-core is running you'll have to run the hac-infra plugin in federated mode as follows:
+  ```bash
+  npm install --legacy-peer-deps
+  npm run start:federated
+  ```
+  **Note:** There is a dependency resolution error seen on running `npm install`. This is on the install of `@openshift/dynamic-plugin-sdk-utils` caused by the `react-virtualized` package having an obsolete React dependency. See [https://issues.redhat.com/browse/HAC-1814](https://issues.redhat.com/browse/HAC-1814). So we need to run `npm install` with `--legacy-peer-deps` as a temporary workaround.
+- Open the URL in the terminal output (Note: you will need to login to RH SSO as a user with access to KCP to see the workspaces)
+
 ### Run plugin locally and see the UI in the browser
 
 1. ```npm install```
@@ -22,14 +49,6 @@ To use webpack proxy you need to append this to your `/etc/hosts` for auth:
 2. ```npm run start:beta``` or ```npm run start:prod:beta```
 
 3. Open the URL listed in the terminal output.
-
-### Run plugin with hac-core locally
-
-In order to run hac-core and the hac-infra plugin together, you will have to pull the https://github.com/openshift/hac-core repository, install all dependencies and run `yarn dev` or `ENVIRONMENT=prod yarn dev` from the `frontend/` directory. Once hac-core is running you'll have to run the hac-infra plugin in federated mode as follows:
-
-```
-npm run start:federated
-```
 
 ### Variables
 
