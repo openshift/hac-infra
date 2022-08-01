@@ -1,7 +1,6 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+import * as React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { act } from 'react-dom/test-utils';
 import '@testing-library/jest-dom';
 import { WorkspaceList } from './index';
 import type { K8sResourceCommon } from '@openshift/dynamic-plugin-sdk-utils';
@@ -43,8 +42,28 @@ const workspacesMockData: K8sResourceCommon[] = [
 
 const promiseForNoData = Promise.resolve([]);
 const promiseForMockedData = Promise.resolve(workspacesMockData);
+const promiseForError = Promise.reject({ status: 403, message: 'Workspace access not permitted' });
 
 describe('Workspace list', () => {
+  afterEach(() => {
+    jest.resetModules();
+  });
+
+  test('should render error when there is an error fetching workspaces', async () => {
+    mockPromise = promiseForError;
+
+    const { container } = render(
+      <BrowserRouter>
+        <WorkspaceList />
+      </BrowserRouter>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Workspace access not permitted')).toBeTruthy();
+      expect(container.querySelector('table')).toBeNull();
+    });
+  });
+
   // TODO: This test will need to be updated when we implement the "Get Workspaces" card UI for the empty state
   test('should render empty state when no data is retrieved', async () => {
     mockPromise = promiseForNoData;
@@ -54,9 +73,10 @@ describe('Workspace list', () => {
         <WorkspaceList />
       </BrowserRouter>,
     );
-    await act(() => mockPromise);
 
-    expect(screen.getByText('No data was retrieved')).toBeVisible();
+    await waitFor(() => {
+      expect(screen.getByText('No data was retrieved')).toBeVisible();
+    });
   });
 
   test('should render list when workspaces data is retrieved successfully', async () => {
@@ -68,20 +88,19 @@ describe('Workspace list', () => {
       </BrowserRouter>,
     );
 
-    await act(() => mockPromise);
+    await waitFor(async () => {
+      const headers = container.querySelectorAll('table[role="presentation"] th');
+      expect(headers.length).toEqual(2);
+      expect(headers[0].textContent).toEqual('Name');
+      expect(headers[1].textContent).toEqual('Labels');
 
-    // Verify column headers
-    const headers = container.querySelectorAll('table[role="presentation"] th');
-    expect(headers.length).toEqual(2);
-    expect(headers[0].textContent).toEqual('Name');
-    expect(headers[1].textContent).toEqual('Labels');
-
-    // TODO: Verify rows - tbody is not being rendered and needs further investigation
-    // expect(screen.getByText('demo-ws1')).toBeTruthy();
-    // waitFor(() => screen.getByText(workspacesMockData[0].metadata.name));
-    // const rows = container.querySelectorAll('table > tbody > tr');
-    // await waitFor(() => expect(screen.getAllByRole('row').length).toEqual(2));
-    // expect(rows[1].textContent).toContain('demo-ws2');
-    // expect(rows[1].textContent).toContain('demo-ws2');
+      // TODO: Verify rows - tbody is not being rendered and needs further investigation
+      // expect(screen.getByText('demo-ws1')).toBeTruthy();
+      // waitFor(() => screen.getByText(workspacesMockData[0].metadata.name));
+      // const rows = container.querySelectorAll('table > tbody > tr');
+      // await waitFor(() => expect(screen.getAllByRole('row').length).toEqual(2));
+      // expect(rows[1].textContent).toContain('demo-ws2');
+      // expect(rows[1].textContent).toContain('demo-ws2');
+    });
   });
 });
