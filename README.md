@@ -20,19 +20,34 @@ To use webpack proxy you need to append this to your `/etc/hosts` for auth:
 In order to run hac-core and the hac-infra plugin together (needed to connect to KCP at this time):
 - Start the local kcp-proxy by cloning [https://github.com/vidyanambiar/kcp-proxy-poc](https://github.com/vidyanambiar/kcp-proxy-poc) and following the steps in the Readme. This proxy is needed as a temporary workaround for adding CORS headers to the KCP requests.
 - Pull the https://github.com/openshift/hac-core repository and install all dependencies
-- (temporary workaround) Change the following highlighted line in HAC Core's [dev webpack configuration file](https://github.com/openshift/hac-core/blob/main/frontend/config/dev.webpack.config.js):
-  ```
+- (temporary workaround) Change the following highlighted lines in HAC Core's [dev webpack configuration file](https://github.com/openshift/hac-core/blob/main/frontend/config/dev.webpack.config.js):
+  <pre><code>
   customProxy: [
     {
       context: (path) => path.includes('/api/k8s'),
-      target: 'http://localhost:3000', // <--- Changed line to point to local proxy
+      <strong>target: 'http://localhost:3000',  // <--- Changed line to point to local proxy</strong>
       secure: false,
       changeOrigin: true,
       autoRewrite: true,
       ws: true,
       pathRewrite: { '^/api/k8s': '' },
+      withCredentials: true,
     },
-  ```
+    pluginProxy('hac-dev'),
+    pluginProxy('hac-build-service'),
+    pluginProxy('hac-infra'),
+    {
+      context: (path) => path.includes('/wss/k8s'),
+      <strong>target: 'ws://localhost:3000',  // <--- Changed line to point to local proxy</strong>
+      secure: false,
+      changeOrigin: true,
+      autoRewrite: true,
+      ws: true,
+      pathRewrite: { '^/wss/k8s': '' },
+      withCredentials: true,
+    },
+  ],    
+  </code></pre>
 - Run `ENVIRONMENT=prod yarn dev` from the `frontend/` directory.
 - Once hac-core is running you'll have to run the hac-infra plugin in federated mode as follows:
   ```bash
