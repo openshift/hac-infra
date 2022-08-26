@@ -1,63 +1,55 @@
 import * as React from 'react';
-import type { K8sModelCommon, K8sResourceCommon } from '@openshift/dynamic-plugin-sdk-utils';
-import { k8sListResourceItems, ListView } from '@openshift/dynamic-plugin-sdk-utils';
+import type { K8sResourceCommon } from '@openshift/dynamic-plugin-sdk-utils';
+import { ListView, useK8sWatchResource } from '@openshift/dynamic-plugin-sdk-utils';
 import type { WorkspaceRowData } from './WorkspaceListConfig';
 import { WorkspaceRow, workspaceColumns, workspaceFilters, defaultErrorText } from './WorkspaceListConfig';
 import { Card } from '@patternfly/react-core';
+import type { ListViewLoadError, HttpError } from './utils';
 
-const WorkspaceModel: K8sModelCommon = {
-  apiVersion: 'v1beta1',
-  apiGroup: 'tenancy.kcp.dev',
-  kind: 'Workspace',
-  plural: 'workspaces',
-};
-
-type LoadError = {
-  message: string;
-  status: number;
+const watchedResource = {
+  isList: true,
+  groupVersionKind: {
+    group: 'tenancy.kcp.dev',
+    version: 'v1beta1',
+    kind: 'Workspace',
+  },
 };
 
 const WorkspaceList: React.FC = () => {
-  const [listData, setListData] = React.useState<WorkspaceRowData[]>([]);
-  const [error, setError] = React.useState<LoadError>();
-  const [loaded, setLoaded] = React.useState<boolean>();
+  // Watch list of workspace resources
+  const [workspaces, loaded, error] = useK8sWatchResource(watchedResource);
 
-  // TODO: k8sListResourceItems should be replaced with useWatchK8sResource hook to pick up edits to workspaces, but this hook does not appear to be working as expected with KCP and needs investigation
-  const fetchWorkspaces = React.useCallback(() => {
+  const [listData, setListData] = React.useState<WorkspaceRowData[]>([]);
+  const [listDataError, setListDataError] = React.useState<ListViewLoadError>();
+
+  const buildListData = React.useCallback(() => {
     let data: WorkspaceRowData[] = [];
-    k8sListResourceItems({
-      model: WorkspaceModel,
-    })
-      .then((workspaces) => {
-        setLoaded(true);
-        if (Array.isArray(workspaces as K8sResourceCommon[])) {
-          workspaces.forEach((workspace: K8sResourceCommon) => {
-            let labels: string[] = [];
-            if (workspace.metadata?.labels) {
-              labels = Object.entries(workspace.metadata?.labels).map(([key, value]) => `${key}=${value}`);
-            }
-            data = [
-              ...data,
-              {
-                name: workspace.metadata?.name ?? '',
-                labels,
-              },
-            ];
-          });
-          setListData([...data] as WorkspaceRowData[]);
+
+    if (error) {
+      const loadError: ListViewLoadError = error as ListViewLoadError;
+      loadError.status = (error as HttpError).status ?? (error as HttpError).response?.status;
+      setListDataError(loadError);
+    } else if (Array.isArray(workspaces as K8sResourceCommon[])) {
+      (workspaces as K8sResourceCommon[]).forEach((workspace: K8sResourceCommon) => {
+        let labels: string[] = [];
+        if (workspace.metadata?.labels) {
+          labels = Object.entries(workspace.metadata?.labels).map(([key, value]) => `${key}=${value}`);
         }
-      })
-      .catch((e) => {
-        const err = e as LoadError;
-        err.status = e.status ?? e.response?.status;
-        setError(err);
-        setLoaded(true);
+        data = [
+          ...data,
+          {
+            name: workspace.metadata?.name ?? '',
+            labels,
+          },
+        ];
       });
-  }, []);
+      setListData([...data] as WorkspaceRowData[]);
+    }
+  }, [workspaces, error]);
 
   React.useEffect(() => {
-    fetchWorkspaces();
-  }, [fetchWorkspaces]);
+    buildListData();
+  }, [buildListData, workspaces]);
 
   return (
     <Card>
@@ -66,7 +58,7 @@ const WorkspaceList: React.FC = () => {
           columns={workspaceColumns}
           data={listData}
           loaded={loaded}
-          loadError={error}
+          loadError={listDataError}
           loadErrorDefaultText={defaultErrorText}
           Row={WorkspaceRow}
           filters={workspaceFilters}
