@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { K8sResourceCommon } from '@openshift/dynamic-plugin-sdk-utils';
 import { ListView, useK8sWatchResource } from '@openshift/dynamic-plugin-sdk-utils';
 import type { WorkspaceRowData } from './WorkspaceListConfig';
-import { WorkspaceRow, workspaceColumns, workspaceFilters, defaultErrorText } from './WorkspaceListConfig';
+import { WorkspaceRow, workspaceColumns, workspaceFilters, workspaceActions, defaultErrorText } from './WorkspaceListConfig';
 import { Card } from '@patternfly/react-core';
 import type { ListViewLoadError, HttpError } from './utils';
 
@@ -62,6 +62,7 @@ const WorkspaceList: React.FC = () => {
           loadErrorDefaultText={defaultErrorText}
           Row={WorkspaceRow}
           filters={workspaceFilters}
+          rowActions={workspaceActions}
           emptyStateDescription="No data was retrieved" // TODO: Add check so that empty payload results in the "Get Started with Workspaces" UI
         />
       </div>

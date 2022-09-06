@@ -1,4 +1,5 @@
 import * as React from 'react';
+import type { IAction } from '@patternfly/react-table';
 import { Td } from '@patternfly/react-table';
 import { Label, Button } from '@patternfly/react-core';
 
@@ -55,6 +56,18 @@ export const workspaceFilters = [
   {
     id: 'name',
     label: '',
+  },
+];
+
+// Actions on each row
+export const workspaceActions: IAction[] = [
+  {
+    title: 'Edit workspace',
+    onClick: () => null,
+  },
+  {
+    title: 'Delete workspace',
+    onClick: () => null,
   },
 ];
 
