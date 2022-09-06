@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import { WorkspaceList } from './index';
@@ -86,12 +86,16 @@ describe('Workspace list', () => {
 
     await waitFor(() => {
       const headers = container.querySelectorAll('table[role="presentation"] th');
-      expect(headers.length).toEqual(2);
       expect(headers[0].textContent).toEqual('Name');
       expect(headers[1].textContent).toEqual('Labels');
 
       expect(screen.getByText('demo-ws1')).toBeTruthy();
       expect(screen.getByText('demo-ws2')).toBeTruthy();
+
+      const actions = container.querySelector('td.pf-c-table__action button[aria-label="Actions"]');
+      fireEvent.click(actions);
+      expect(screen.getByText('Edit workspace')).toBeTruthy();
+      expect(screen.getByText('Delete workspace')).toBeTruthy();
     });
   });
 });
