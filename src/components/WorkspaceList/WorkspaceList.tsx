@@ -5,6 +5,7 @@ import type { WorkspaceRowData } from './WorkspaceListConfig';
 import { WorkspaceRow, workspaceColumns, workspaceFilters, workspaceActions, defaultErrorText } from './WorkspaceListConfig';
 import { Card } from '@patternfly/react-core';
 import type { ListViewLoadError, HttpError } from './utils';
+import WorkspaceAddButton from '../WorkspaceAdd/WorkspaceAddButton';
 
 const watchedResource = {
   isList: true,
@@ -54,6 +55,7 @@ const WorkspaceList: React.FC = () => {
   return (
     <Card>
       <div style={{ overflow: 'scroll' }}>
+        <WorkspaceAddButton workspaces={Array.isArray(workspaces) ? workspaces : [workspaces]} />
         <ListView
           columns={workspaceColumns}
           data={listData}
