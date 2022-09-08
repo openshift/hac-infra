@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@openshift/dynamic-plugin-sdk": "^1.0.0-alpha14",
-    "@openshift/dynamic-plugin-sdk-utils": "^1.0.0-alpha16",
+    "@openshift/dynamic-plugin-sdk-utils": "^1.0.0-alpha17",
     "@openshift/dynamic-plugin-sdk-webpack": "^1.0.0-alpha10",
     "@patternfly/react-table": "^4.93.1",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^1.2.1",
@@ -68,4 +68,3 @@
   "license": "Apache-2.0",
   "private": true
 }
-

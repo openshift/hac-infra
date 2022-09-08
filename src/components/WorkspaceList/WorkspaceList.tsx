@@ -2,10 +2,12 @@ import * as React from 'react';
 import type { K8sResourceCommon } from '@openshift/dynamic-plugin-sdk-utils';
 import { ListView, useK8sWatchResource } from '@openshift/dynamic-plugin-sdk-utils';
 import type { WorkspaceRowData } from './WorkspaceListConfig';
-import { WorkspaceRow, workspaceColumns, workspaceFilters, workspaceActions, defaultErrorText } from './WorkspaceListConfig';
+import { WorkspaceRow, workspaceColumns, workspaceFilters, defaultErrorText } from './WorkspaceListConfig';
 import { Card } from '@patternfly/react-core';
+import type { IAction } from '@patternfly/react-table';
 import type { ListViewLoadError, HttpError } from './utils';
 import WorkspaceAddButton from '../WorkspaceAdd/WorkspaceAddButton';
+import WorkspaceDeleteModal from '../WorkspaceDelete/WorkspaceDeleteModal';
 
 const watchedResource = {
   isList: true,
@@ -22,6 +24,8 @@ const WorkspaceList: React.FC = () => {
 
   const [listData, setListData] = React.useState<WorkspaceRowData[]>([]);
   const [listDataError, setListDataError] = React.useState<ListViewLoadError>();
+
+  const [workspaceToDelete, setWorkspaceToDelete] = React.useState('');
 
   const buildListData = React.useCallback(() => {
     let data: WorkspaceRowData[] = [];
@@ -52,10 +56,24 @@ const WorkspaceList: React.FC = () => {
     buildListData();
   }, [buildListData, workspaces]);
 
+  const workspaceActions: IAction[] = [
+    {
+      title: 'Edit workspace',
+      onClick: () => {},
+    },
+    {
+      title: 'Delete workspace',
+      onClick: (event, rowIndex, rowData) => {
+        setWorkspaceToDelete(rowData.name);
+      },
+    },
+  ];
+
   return (
     <Card>
       <div style={{ overflow: 'scroll' }}>
         <WorkspaceAddButton workspaces={Array.isArray(workspaces) ? workspaces : [workspaces]} />
+        <WorkspaceDeleteModal workspaceName={workspaceToDelete} isOpen={!!workspaceToDelete} closeModal={() => setWorkspaceToDelete('')} />
         <ListView
           columns={workspaceColumns}
           data={listData}

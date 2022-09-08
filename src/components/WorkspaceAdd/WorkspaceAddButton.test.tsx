@@ -40,12 +40,10 @@ jest.mock('@openshift/dynamic-plugin-sdk-utils', () => ({
 const k8sCreateResourceMock = k8sCreateResource as jest.Mock;
 
 describe('Add Workspace modal', () => {
-  let container: HTMLElement;
-
   beforeEach(() => {
     jest.resetModules();
     k8sCreateResourceMock.mockClear();
-    container = render(<WorkspaceAddButton workspaces={workspacesMockData} />).container;
+    render(<WorkspaceAddButton workspaces={workspacesMockData} />);
   });
 
   it('Modal opens when user clicks on Create workspace button', () => {
@@ -58,7 +56,12 @@ describe('Add Workspace modal', () => {
 
   it('Is accessible', async () => {
     openModal();
-    const results = await axe(container);
+    // Button is accessible
+    let results = await axe(screen.getByText('Create workspace'));
+    expect(results).toHaveNoViolations();
+
+    //Modal is accessible
+    results = await axe(screen.getByRole('dialog'));
     expect(results).toHaveNoViolations();
   });
 
@@ -236,8 +239,8 @@ describe('Add Workspace modal', () => {
     await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
     expect(screen.queryByRole('dialog')).toBeInTheDocument();
 
-    // Check accessibility of alert
-    const results = await axe(container);
+    // Check accessibility of modal with alert
+    const results = await axe(screen.queryByRole('dialog'));
     expect(results).toHaveNoViolations();
   });
 
@@ -284,5 +287,19 @@ describe('Add Workspace modal', () => {
       },
     });
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  });
+
+  it('Clicking cancel button closes modal', () => {
+    openModal();
+    fireEvent.click(screen.getByText('Cancel'));
+    expect(k8sCreateResourceMock).not.toHaveBeenCalled();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('Clicking cancel "x" closes modal', () => {
+    openModal();
+    fireEvent.click(screen.getByLabelText('Close'));
+    expect(k8sCreateResourceMock).not.toHaveBeenCalled();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });
