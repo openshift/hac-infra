@@ -16,6 +16,7 @@ To use webpack proxy you need to append this to your `/etc/hosts` for auth:
 ```
 
 ### Run plugin locally and see the UI in the browser
+*(With hac-core served from CDN)*
 
 1. ```npm install --legacy-peer-deps```
 
