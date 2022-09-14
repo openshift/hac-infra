@@ -15,9 +15,20 @@ To use webpack proxy you need to append this to your `/etc/hosts` for auth:
 127.0.0.1 stage.foo.redhat.com
 ```
 
+### Run plugin locally and see the UI in the browser
+*(With hac-core served from CDN)*
+
+1. ```npm install --legacy-peer-deps```
+
+2. ```npm run start:prod:beta```
+
+3. Start the local kcp-proxy by cloning [https://github.com/vidyanambiar/kcp-proxy-poc](https://github.com/vidyanambiar/kcp-proxy-poc) and following the steps in the Readme. This proxy is needed as a temporary workaround for adding CORS headers to the KCP requests.
+
+4. Open the URL listed in the terminal output.
+
 ### Run plugin with hac-core locally
 
-In order to run hac-core and the hac-infra plugin together (needed to connect to KCP at this time):
+In order to run hac-core and the hac-infra plugin together:
 - Start the local kcp-proxy by cloning [https://github.com/vidyanambiar/kcp-proxy-poc](https://github.com/vidyanambiar/kcp-proxy-poc) and following the steps in the Readme. This proxy is needed as a temporary workaround for adding CORS headers to the KCP requests.
 - Pull the https://github.com/openshift/hac-core repository and install all dependencies
 - (temporary workaround) Change the following highlighted lines in HAC Core's [dev webpack configuration file](https://github.com/openshift/hac-core/blob/main/frontend/config/dev.webpack.config.js):
@@ -46,7 +57,7 @@ In order to run hac-core and the hac-infra plugin together (needed to connect to
       pathRewrite: { '^/wss/k8s': '' },
       withCredentials: true,
     },
-  ],    
+  ],
   </code></pre>
 - Run `ENVIRONMENT=prod yarn dev` from the `frontend/` directory.
 - Once hac-core is running you'll have to run the hac-infra plugin in federated mode as follows:
@@ -56,14 +67,6 @@ In order to run hac-core and the hac-infra plugin together (needed to connect to
   ```
   **Note:** There is a dependency resolution error seen on running `npm install`. This is on the install of `@openshift/dynamic-plugin-sdk-utils` caused by the `react-virtualized` package having an obsolete React dependency. See [https://issues.redhat.com/browse/HAC-1814](https://issues.redhat.com/browse/HAC-1814). So we need to run `npm install` with `--legacy-peer-deps` as a temporary workaround.
 - Open the URL in the terminal output (Note: you will need to login to RH SSO as a user with access to KCP to see the workspaces)
-
-### Run plugin locally and see the UI in the browser
-
-1. ```npm install```
-
-2. ```npm run start:beta``` or ```npm run start:prod:beta```
-
-3. Open the URL listed in the terminal output.
 
 ### Variables
 
