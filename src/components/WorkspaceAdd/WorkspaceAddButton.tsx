@@ -117,7 +117,7 @@ const WorkspaceAddButton = ({ workspaces }: { workspaces: K8sResourceCommon[] })
           </Button>,
         ]}
       >
-        {error ? <Alert variant="danger" isInline title={error} role="alert" /> : null}
+        {error ? <Alert variant="danger" isInline title={error} role="alert" titleHeadingLevel="h2" /> : null}
         {loading ? 'Loading ....' : null}
         {!error && !loading ? (
           <Form>

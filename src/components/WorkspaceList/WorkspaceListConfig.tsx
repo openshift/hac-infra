@@ -1,5 +1,4 @@
 import * as React from 'react';
-import type { IAction } from '@patternfly/react-table';
 import { Td } from '@patternfly/react-table';
 import { Label, Button } from '@patternfly/react-core';
 
@@ -59,16 +58,4 @@ export const workspaceFilters = [
   },
 ];
 
-// Actions on each row
-export const workspaceActions: IAction[] = [
-  {
-    title: 'Edit workspace',
-    onClick: () => null,
-  },
-  {
-    title: 'Delete workspace',
-    onClick: () => null,
-  },
-];
-
-export const defaultErrorText = 'An error occured while retrieving the workspaces';
+export const defaultErrorText = 'An error occurred while retrieving the workspaces';
