@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-
+import { MemoryRouter } from 'react-router-dom';
 import { toHaveNoViolations, axe } from 'jest-axe';
 expect.extend(toHaveNoViolations);
 
@@ -39,11 +39,24 @@ jest.mock('@openshift/dynamic-plugin-sdk-utils', () => ({
 }));
 const k8sCreateResourceMock = k8sCreateResource as jest.Mock;
 
+const mockedUsedNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+}));
+
 describe('Add Workspace modal', () => {
   beforeEach(() => {
     jest.resetModules();
     k8sCreateResourceMock.mockClear();
-    render(<WorkspaceAddButton workspaces={workspacesMockData} />);
+    mockedUsedNavigate.mockClear();
+
+    render(
+      <MemoryRouter>
+        <WorkspaceAddButton workspaces={workspacesMockData} />
+      </MemoryRouter>,
+    );
   });
 
   it('Modal opens when user clicks on Create workspace button', () => {
@@ -238,6 +251,7 @@ describe('Add Workspace modal', () => {
 
     await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
     expect(screen.queryByRole('dialog')).toBeInTheDocument();
+    expect(mockedUsedNavigate).not.toHaveBeenCalled();
 
     // Check accessibility of modal with alert
     const results = await axe(screen.queryByRole('dialog'));
@@ -286,7 +300,10 @@ describe('Add Workspace modal', () => {
         },
       },
     });
-    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith('1workspace'));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    // KKD - verify route change
   });
 
   it('Clicking cancel button closes modal', () => {
@@ -294,6 +311,7 @@ describe('Add Workspace modal', () => {
     fireEvent.click(screen.getByText('Cancel'));
     expect(k8sCreateResourceMock).not.toHaveBeenCalled();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(mockedUsedNavigate).not.toHaveBeenCalled();
   });
 
   it('Clicking cancel "x" closes modal', () => {
@@ -301,5 +319,6 @@ describe('Add Workspace modal', () => {
     fireEvent.click(screen.getByLabelText('Close'));
     expect(k8sCreateResourceMock).not.toHaveBeenCalled();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(mockedUsedNavigate).not.toHaveBeenCalled();
   });
 });

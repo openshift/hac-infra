@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Td } from '@patternfly/react-table';
-import { Label, Button } from '@patternfly/react-core';
+import { Label } from '@patternfly/react-core';
+import { Link } from 'react-router-dom';
 
 export type WorkspaceRowData = {
   name: string;
@@ -16,10 +17,7 @@ export const WorkspaceRow: React.FC<RowProps<WorkspaceRowData>> = ({ obj }) => {
   return (
     <>
       <Td dataLabel="name">
-        {/* TODO: This button should link to the Workspace Details UI */}
-        <Button variant="link" isInline>
-          {obj.name}
-        </Button>
+        <Link to={`${obj.name}`}>{obj.name}</Link>
       </Td>
       <Td dataLabel="labels">
         {obj.labels.map((label) => (

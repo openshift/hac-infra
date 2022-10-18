@@ -8,6 +8,7 @@ import type { IAction } from '@patternfly/react-table';
 import type { ListViewLoadError, HttpError } from './utils';
 import WorkspaceAddButton from '../WorkspaceAdd/WorkspaceAddButton';
 import WorkspaceDeleteModal from '../WorkspaceDelete/WorkspaceDeleteModal';
+import { PageContentWrapper } from '../StyledComponents';
 
 const watchedResource = {
   isList: true,
@@ -71,7 +72,7 @@ const WorkspaceList: React.FC = () => {
 
   return (
     <Card>
-      <div style={{ overflow: 'scroll' }}>
+      <PageContentWrapper>
         <WorkspaceAddButton workspaces={Array.isArray(workspaces) ? workspaces : [workspaces]} />
         <WorkspaceDeleteModal workspaceName={workspaceToDelete} isOpen={!!workspaceToDelete} closeModal={() => setWorkspaceToDelete('')} />
         <ListView
@@ -85,7 +86,7 @@ const WorkspaceList: React.FC = () => {
           rowActions={workspaceActions}
           emptyStateDescription="No data was retrieved" // TODO: Add check so that empty payload results in the "Get Started with Workspaces" UI
         />
-      </div>
+      </PageContentWrapper>
     </Card>
   );
 };

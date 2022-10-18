@@ -1,10 +1,14 @@
 import * as React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
+import { toHaveNoViolations, axe } from 'jest-axe';
 import '@testing-library/jest-dom';
 import { WorkspaceList } from './index';
 import type { K8sResourceCommon } from '@openshift/dynamic-plugin-sdk-utils';
 import { useK8sWatchResource } from '@openshift/dynamic-plugin-sdk-utils';
+
+expect.extend(toHaveNoViolations);
 
 jest.mock('@openshift/dynamic-plugin-sdk-utils', () => ({
   ...jest.requireActual('@openshift/dynamic-plugin-sdk-utils'),
@@ -97,5 +101,45 @@ describe('Workspace list', () => {
       expect(screen.getByText('Edit workspace')).toBeTruthy();
       expect(screen.getByText('Delete workspace')).toBeTruthy();
     });
+  });
+
+  test('list is accessible', async () => {
+    useK8sWatchResourceMock.mockReturnValue([[...workspacesMockData], true, null]);
+
+    const { container } = render(
+      <BrowserRouter>
+        <WorkspaceList />
+      </BrowserRouter>,
+    );
+    expect(await screen.findByText('demo-ws1')).toBeInTheDocument();
+
+    // NOTE this test will fail until https://github.com/openshift/dynamic-plugin-sdk/pull/175
+    // is merged and published
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+
+  test('clicking on workspace name goes to details route', async () => {
+    useK8sWatchResourceMock.mockReturnValue([[...workspacesMockData], true, null]);
+
+    const history = createMemoryHistory();
+    history.push = jest.fn();
+
+    render(
+      <Router location={history.location} navigator={history}>
+        <WorkspaceList />
+      </Router>,
+    );
+    expect(await screen.findByText('demo-ws1')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('demo-ws1'));
+
+    expect(history.push).toHaveBeenCalledWith(
+      {
+        hash: '',
+        pathname: '/demo-ws1',
+        search: '',
+      },
+      undefined,
+    );
   });
 });
