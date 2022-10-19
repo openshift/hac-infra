@@ -38,13 +38,33 @@ const webpackProxy = {
       withCredentials: true,
     },
     {
+      context: (path) => path.includes('/api/kcp'),
+      target: 'http://localhost:3000', // TODO: Switch to Akamai proxy when it becomes available
+      secure: false,
+      changeOrigin: true,
+      autoRewrite: true,
+      ws: true,
+      pathRewrite: { '^/api/kcp': '' },
+      withCredentials: true,
+    },
+    {
       context: (path) => path.includes('/wss/k8s'),
-      target: 'ws://localhost:3000', // TODO: Switch to Akamai proxy when it becomes available
+      target: 'wss://localhost:3000', // TODO: Switch to Akamai proxy when it becomes available
       secure: false,
       changeOrigin: true,
       autoRewrite: true,
       ws: true,
       pathRewrite: { '^/wss/k8s': '' },
+      withCredentials: true,
+    },
+    {
+      context: (path) => path.includes('/wss/kcp'),
+      target: 'wss://localhost:3000', // TODO: Switch to Akamai proxy when it becomes available
+      secure: false,
+      changeOrigin: true,
+      autoRewrite: true,
+      ws: true,
+      pathRewrite: { '^/wss/kcp': '' },
       withCredentials: true,
     },
   ],

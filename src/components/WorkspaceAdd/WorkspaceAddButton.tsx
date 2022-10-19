@@ -59,6 +59,11 @@ const WorkspaceAddButton = ({ workspaces }: { workspaces: K8sResourceCommon[] })
         metadata: { name: workspaceName },
         spec: { type: { name: workspaceType } },
       },
+      fetchOptions: {
+        requestInit: {
+          pathPrefix: 'api/kcp',
+        },
+      },
     })
       .then((response) => {
         // eslint-disable-next-line no-console

@@ -26,7 +26,15 @@ const WorkspaceDeleteModal = ({ workspaceName, isOpen, closeModal }: { workspace
   const deleteWorkspace = () => {
     setLoading(true);
 
-    k8sDeleteResource({ model: WorkspaceModel, queryOptions: { path: workspaceName } })
+    k8sDeleteResource({
+      model: WorkspaceModel,
+      queryOptions: { path: workspaceName },
+      fetchOptions: {
+        requestInit: {
+          pathPrefix: 'api/kcp',
+        },
+      },
+    })
       .then(() => {
         closeModal();
       })

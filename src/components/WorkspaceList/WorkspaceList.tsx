@@ -20,7 +20,7 @@ const watchedResource = {
 
 const WorkspaceList: React.FC = () => {
   // Watch list of workspace resources
-  const [workspaces, loaded, error] = useK8sWatchResource(watchedResource);
+  const [workspaces, loaded, error] = useK8sWatchResource(watchedResource, { wsPrefix: 'wss/kcp' });
 
   const [listData, setListData] = React.useState<WorkspaceRowData[]>([]);
   const [listDataError, setListDataError] = React.useState<ListViewLoadError>();
