@@ -14,7 +14,14 @@ const WorkspaceModel: K8sModelCommon = {
   plural: 'workspaces',
 };
 
-const WorkspaceDeleteModal = ({ workspaceName, isOpen, closeModal }: { workspaceName: string; isOpen: boolean; closeModal: () => void }) => {
+type WorkspaceDeleteModalProps = {
+  workspaceName: string;
+  isOpen: boolean;
+  closeModal: () => void;
+  onDelete?: () => void;
+};
+
+const WorkspaceDeleteModal = ({ workspaceName, isOpen, closeModal, onDelete }: WorkspaceDeleteModalProps) => {
   const [confirmText, setConfirmText] = React.useState('');
   const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -29,6 +36,7 @@ const WorkspaceDeleteModal = ({ workspaceName, isOpen, closeModal }: { workspace
     k8sDeleteResource({ model: WorkspaceModel, queryOptions: { path: workspaceName } })
       .then(() => {
         closeModal();
+        onDelete();
       })
       .catch((err) => {
         setError(err.message);

@@ -1,9 +1,11 @@
 import React from 'react';
 import { DetailsPage, k8sGetResource, K8sModelCommon /* , useK8sWatchResource */ } from '@openshift/dynamic-plugin-sdk-utils';
 import type { K8sResourceCommon } from '@openshift/dynamic-plugin-sdk-utils';
-import { useParams } from 'react-router-dom';
 import { PageContentWrapper } from '../common';
 import OverviewTab from './OverviewTab';
+import { useParams, useNavigate } from 'react-router-dom';
+
+import WorkspaceDeleteModal from '../WorkspaceDelete/WorkspaceDeleteModal';
 
 const PAGE_TITLE = 'Workspace Details';
 
@@ -23,6 +25,21 @@ const WorkspaceDetailsBreadcrumbs = (workspaceName: string) => [
   { name: 'Workspace Details', path: workspaceName ? `/workspaces/${workspaceName}` : '' },
 ];
 
+const WorkspaceActionMenu = (setDeleteModalOpen: (isOpen: boolean) => void) => ({
+  actions: [
+    {
+      id: '2',
+      label: 'Delete workspace',
+      cta: {
+        callback: () => {
+          setDeleteModalOpen(true);
+        },
+      },
+    },
+  ],
+  isDisabled: false,
+});
+
 const WorkspaceModel: K8sModelCommon = {
   apiVersion: 'v1beta1',
   apiGroup: 'tenancy.kcp.dev',
@@ -32,6 +49,7 @@ const WorkspaceModel: K8sModelCommon = {
 
 const WorkspaceDetails = () => {
   const { workspaceName } = useParams();
+  const navigate = useNavigate();
 
   const [workspace, setWorkspace] = React.useState<K8sResourceCommon | undefined>();
   const [loaded, setLoaded] = React.useState(false);
@@ -42,6 +60,7 @@ const WorkspaceDetails = () => {
       }
     | undefined
   >();
+  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
 
   // Watch isn't currently working
   // const watchedResource = {
@@ -82,11 +101,20 @@ const WorkspaceDetails = () => {
 
   return (
     <PageContentWrapper>
+      <WorkspaceDeleteModal
+        workspaceName={workspace?.metadata?.name}
+        isOpen={deleteModalOpen}
+        closeModal={() => setDeleteModalOpen(false)}
+        onDelete={() => {
+          navigate('/workspaces');
+        }}
+      />
       <DetailsPage
         ariaLabel={PAGE_TITLE}
         tabs={WorkspaceDetailsTabs(workspace, loaded, error)}
         breadcrumbs={WorkspaceDetailsBreadcrumbs(workspace?.metadata?.name)}
         pageHeading={{ title: workspace?.metadata?.name || workspaceName || PAGE_TITLE }}
+        actionMenu={WorkspaceActionMenu(setDeleteModalOpen)}
       />
     </PageContentWrapper>
   );
