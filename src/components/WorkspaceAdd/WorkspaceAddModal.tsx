@@ -40,10 +40,9 @@ const isValidWorkspaceName = (workspaceName: string): boolean => {
 const isUniqueName = (workspaceName: string, existingWorkspaces: K8sResourceCommon[] = []) =>
   !existingWorkspaces.some((workspace) => workspace.metadata.name === workspaceName);
 
-const WorkspaceAddButton = ({ workspaces }: { workspaces: K8sResourceCommon[] }) => {
+const WorkspaceAddModal = ({ workspaces, isOpen, onClose }: { workspaces: K8sResourceCommon[]; isOpen: boolean; onClose: () => void }) => {
   const navigate = useNavigate();
 
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [workspaceName, setWorkspaceName] = React.useState('');
   const [workspaceType, setWorkspaceType] = React.useState(workspaceTypeDefault);
   const [isValidName, setIsValidName] = React.useState(ValidatedOptions.default);
@@ -64,11 +63,9 @@ const WorkspaceAddButton = ({ workspaces }: { workspaces: K8sResourceCommon[] })
       },
     })
       .then((response) => {
+        onClose();
         if (response?.metadata?.name) {
-          setIsModalOpen(!isModalOpen);
           navigate(`${response.metadata.name}`);
-        } else {
-          throw new Error('Workspace successfully added. Unable to direct to details page.');
         }
       })
       .catch((err) => {
@@ -80,13 +77,13 @@ const WorkspaceAddButton = ({ workspaces }: { workspaces: K8sResourceCommon[] })
   };
 
   React.useEffect(() => {
-    if (!isModalOpen) {
+    if (!isOpen) {
       setWorkspaceName('');
       setError('');
       setWorkspaceType(workspaceTypeDefault);
       setLoading(false);
     }
-  }, [isModalOpen]);
+  }, [isOpen]);
 
   React.useEffect(() => {
     const validName = isValidWorkspaceName(workspaceName);
@@ -102,59 +99,56 @@ const WorkspaceAddButton = ({ workspaces }: { workspaces: K8sResourceCommon[] })
   }, [workspaceName, workspaces]);
 
   return (
-    <>
-      <Button onClick={() => setIsModalOpen(true)}>Create workspace</Button>
-      <Modal
-        variant={ModalVariant.small}
-        title="Create a workspace"
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        actions={[
-          !error ? (
-            <Button key="confirm" variant="primary" onClick={createWorkspace} isDisabled={isValidName !== ValidatedOptions.success}>
-              Create
-            </Button>
-          ) : null,
-          <Button key="cancel" variant="link" onClick={() => setIsModalOpen(false)}>
-            {!error ? 'Cancel' : 'Close'}
-          </Button>,
-        ]}
-      >
-        {error ? <Alert variant="danger" isInline title={error} role="alert" titleHeadingLevel="h2" /> : null}
-        {loading ? 'Loading ....' : null}
-        {!error && !loading ? (
-          <Form>
-            <FormGroup
-              label="Name"
+    <Modal
+      variant={ModalVariant.small}
+      title="Create a workspace"
+      isOpen={isOpen}
+      onClose={() => onClose()}
+      actions={[
+        !error ? (
+          <Button key="confirm" variant="primary" onClick={createWorkspace} isDisabled={isValidName !== ValidatedOptions.success}>
+            Create
+          </Button>
+        ) : null,
+        <Button key="cancel" variant="link" onClick={() => onClose()}>
+          {!error ? 'Cancel' : 'Close'}
+        </Button>,
+      ]}
+    >
+      {error ? <Alert variant="danger" isInline title={error} role="alert" titleHeadingLevel="h2" /> : null}
+      {loading ? 'Loading ....' : null}
+      {!error && !loading ? (
+        <Form>
+          <FormGroup
+            label="Name"
+            isRequired
+            helperTextInvalid={nameExists ? 'This name already exists' : 'Must only contain letters, numbers, and dashes'}
+            helperTextInvalidIcon={<ExclamationCircleIcon />}
+            validated={isValidName}
+            fieldId="workspace-name"
+          >
+            <TextInput
               isRequired
-              helperTextInvalid={nameExists ? 'This name already exists' : 'Must only contain letters, numbers, and dashes'}
-              helperTextInvalidIcon={<ExclamationCircleIcon />}
+              type="text"
+              value={workspaceName}
+              onChange={setWorkspaceName}
               validated={isValidName}
-              fieldId="workspace-name"
-            >
-              <TextInput
-                isRequired
-                type="text"
-                value={workspaceName}
-                onChange={setWorkspaceName}
-                validated={isValidName}
-                id="workspace-name"
-                name="workspace-name"
-              />
-            </FormGroup>
+              id="workspace-name"
+              name="workspace-name"
+            />
+          </FormGroup>
 
-            <FormGroup label="Type" fieldId="workspace-type">
-              <FormSelect value={workspaceType} onChange={setWorkspaceType} id="workspace-type" name="workspace-type">
-                {workspaceTypes.map((option, index) => (
-                  <FormSelectOption key={index} value={option} label={option} />
-                ))}
-              </FormSelect>
-            </FormGroup>
-          </Form>
-        ) : null}
-      </Modal>
-    </>
+          <FormGroup label="Type" fieldId="workspace-type">
+            <FormSelect value={workspaceType} onChange={setWorkspaceType} id="workspace-type" name="workspace-type">
+              {workspaceTypes.map((option, index) => (
+                <FormSelectOption key={index} value={option} label={option} />
+              ))}
+            </FormSelect>
+          </FormGroup>
+        </Form>
+      ) : null}
+    </Modal>
   );
 };
 
-export default WorkspaceAddButton;
+export default WorkspaceAddModal;

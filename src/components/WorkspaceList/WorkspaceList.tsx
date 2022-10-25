@@ -6,7 +6,7 @@ import { WorkspaceRow, workspaceColumns, workspaceFilters, defaultErrorText } fr
 import { Card } from '@patternfly/react-core';
 import type { IAction } from '@patternfly/react-table';
 import type { ListViewLoadError, HttpError } from './utils';
-import WorkspaceAddButton from '../WorkspaceAdd/WorkspaceAddButton';
+import WorkspaceAddModal from '../WorkspaceAdd/WorkspaceAddModal';
 import WorkspaceDeleteModal from '../WorkspaceDelete/WorkspaceDeleteModal';
 import { PageContentWrapper } from '../common';
 
@@ -25,6 +25,7 @@ const WorkspaceList: React.FC = () => {
 
   const [listData, setListData] = React.useState<WorkspaceRowData[]>([]);
   const [listDataError, setListDataError] = React.useState<ListViewLoadError>();
+  const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
 
   const [workspaceToDelete, setWorkspaceToDelete] = React.useState('');
 
@@ -70,10 +71,21 @@ const WorkspaceList: React.FC = () => {
     },
   ];
 
+  const actionButtons = [
+    {
+      label: 'Create workspace',
+      callback: () => setIsAddModalOpen(true),
+    },
+  ];
+
   return (
     <Card>
       <PageContentWrapper>
-        <WorkspaceAddButton workspaces={Array.isArray(workspaces) ? workspaces : [workspaces]} />
+        <WorkspaceAddModal
+          workspaces={Array.isArray(workspaces) ? workspaces : [workspaces]}
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+        />
         <WorkspaceDeleteModal workspaceName={workspaceToDelete} isOpen={!!workspaceToDelete} closeModal={() => setWorkspaceToDelete('')} />
         <ListView
           columns={workspaceColumns}
@@ -85,6 +97,7 @@ const WorkspaceList: React.FC = () => {
           filters={workspaceFilters}
           rowActions={workspaceActions}
           emptyStateDescription="No data was retrieved" // TODO: Add check so that empty payload results in the "Get Started with Workspaces" UI
+          actionButtons={actionButtons}
         />
       </PageContentWrapper>
     </Card>
