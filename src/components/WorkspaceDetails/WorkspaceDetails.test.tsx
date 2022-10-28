@@ -94,8 +94,6 @@ describe('Workspace Details Page', () => {
       // Ensure that the useEffect has fully finished
       expect(await screen.findByText('universal')).toBeInTheDocument();
 
-      // NOTE this test will fail until https://github.com/openshift/dynamic-plugin-sdk/pull/175
-      // is merged and published
       const results = await axe(container);
       expect(results).toHaveNoViolations();
     });

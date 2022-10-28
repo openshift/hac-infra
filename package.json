@@ -23,12 +23,11 @@
     "@patternfly/react-core": "^4.192.15",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-helmet": "^6.1.0",
-    "styled-components": "^5.3.6"
+    "react-helmet": "^6.1.0"
   },
   "devDependencies": {
     "@openshift/dynamic-plugin-sdk": "^1.0.0-alpha14",
-    "@openshift/dynamic-plugin-sdk-utils": "^1.0.0-alpha17",
+    "@openshift/dynamic-plugin-sdk-utils": "^1.0.0",
     "@openshift/dynamic-plugin-sdk-webpack": "^1.0.0-alpha10",
     "@patternfly/react-table": "^4.93.1",
     "@patternfly/react-virtualized-extension": "^4.53.2",
@@ -41,7 +40,6 @@
     "@types/jest-axe": "^3.5.4",
     "@types/react": "^17.0.39",
     "@types/react-helmet": "^6.1.5",
-    "@types/styled-components": "^5.1.26",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
     "eslint": "^8.9.0",

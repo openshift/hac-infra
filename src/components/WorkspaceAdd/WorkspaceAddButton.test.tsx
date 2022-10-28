@@ -303,7 +303,33 @@ describe('Add Workspace modal', () => {
 
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith('1workspace'));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    // KKD - verify route change
+  });
+
+  test('Modal shows error if addition is successfully created but unable to verify workspace name', async () => {
+    k8sCreateResourceMock.mockResolvedValue({
+      metadata: {
+        uid: 'my-uuid',
+      },
+      spec: {
+        type: {
+          name: 'universal',
+        },
+      },
+    });
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    openModal();
+
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: '1workspace' },
+    });
+
+    fireEvent.click(screen.getByText('Create'));
+
+    await waitFor(() => expect(k8sCreateResourceMock).toHaveBeenCalledTimes(1));
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByRole('alert')).toBeInTheDocument();
   });
 
   it('Clicking cancel button closes modal', () => {

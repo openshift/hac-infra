@@ -2,8 +2,10 @@ import React from 'react';
 import { DetailsPage, k8sGetResource, K8sModelCommon /* , useK8sWatchResource */ } from '@openshift/dynamic-plugin-sdk-utils';
 import type { K8sResourceCommon } from '@openshift/dynamic-plugin-sdk-utils';
 import { useParams } from 'react-router-dom';
-import { PageContentWrapper } from '../StyledComponents';
+import { PageContentWrapper } from '../common';
 import OverviewTab from './OverviewTab';
+
+const PAGE_TITLE = 'Workspace Details';
 
 const WorkspaceDetailsTabs = (workspace: K8sResourceCommon, loaded: boolean, error: { message: string; status: number }) => {
   return [
@@ -81,10 +83,10 @@ const WorkspaceDetails = () => {
   return (
     <PageContentWrapper>
       <DetailsPage
-        ariaLabel="Workspace details"
+        ariaLabel={PAGE_TITLE}
         tabs={WorkspaceDetailsTabs(workspace, loaded, error)}
         breadcrumbs={WorkspaceDetailsBreadcrumbs(workspace?.metadata?.name)}
-        pageHeading={{ title: workspace?.metadata.name || workspaceName || 'Workspace Details' }}
+        pageHeading={{ title: workspace?.metadata?.name || workspaceName || PAGE_TITLE }}
       />
     </PageContentWrapper>
   );

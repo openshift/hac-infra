@@ -8,7 +8,7 @@ import type { IAction } from '@patternfly/react-table';
 import type { ListViewLoadError, HttpError } from './utils';
 import WorkspaceAddButton from '../WorkspaceAdd/WorkspaceAddButton';
 import WorkspaceDeleteModal from '../WorkspaceDelete/WorkspaceDeleteModal';
-import { PageContentWrapper } from '../StyledComponents';
+import { PageContentWrapper } from '../common';
 
 const watchedResource = {
   isList: true,

@@ -64,8 +64,12 @@ const WorkspaceAddButton = ({ workspaces }: { workspaces: K8sResourceCommon[] })
       },
     })
       .then((response) => {
-        setIsModalOpen(!isModalOpen);
-        navigate(`${response.metadata.name}`);
+        if (response?.metadata?.name) {
+          setIsModalOpen(!isModalOpen);
+          navigate(`${response.metadata.name}`);
+        } else {
+          throw new Error('Workspace successfully added. Unable to direct to details page.');
+        }
       })
       .catch((err) => {
         setError(err.message);
