@@ -6,6 +6,7 @@ import { createMemoryHistory } from 'history';
 import type { MemoryHistory } from 'history';
 import { k8sGetResource, k8sDeleteResource } from '@openshift/dynamic-plugin-sdk-utils';
 import { WorkspaceDetails } from './index';
+import ROUTES from '../../../config/routeNames';
 
 jest.mock('@openshift/dynamic-plugin-sdk-utils', () => ({
   ...jest.requireActual('@openshift/dynamic-plugin-sdk-utils'),
@@ -47,7 +48,7 @@ describe('Workspace Details Page', () => {
     k8sGetResourceMock.mockClear();
     k8sDeleteResourceMock.mockClear();
     history = createMemoryHistory();
-    history.push('/workspaces/demo-workspace');
+    history.push(`${ROUTES.workspaces}/demo-workspace`);
     useNavigateMock.mockClear();
   });
 
@@ -94,7 +95,7 @@ describe('Workspace Details Page', () => {
 
       // Verify delete and navigation to the workspace list page
       expect(k8sDeleteResourceMock).toHaveBeenCalled();
-      expect(useNavigateMock).toHaveBeenCalledWith('/workspaces');
+      expect(useNavigateMock).toHaveBeenCalledWith(ROUTES.workspaces);
     });
   });
 

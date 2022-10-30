@@ -3,6 +3,7 @@ import { DetailsPage, k8sGetResource, K8sModelCommon /* , useK8sWatchResource */
 import type { K8sResourceCommon } from '@openshift/dynamic-plugin-sdk-utils';
 import { PageContentWrapper } from '../common';
 import OverviewTab from './OverviewTab';
+import ROUTES from '../../../config/routeNames';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import WorkspaceDeleteModal from '../WorkspaceDelete/WorkspaceDeleteModal';
@@ -21,14 +22,14 @@ const WorkspaceDetailsTabs = (workspace: K8sResourceCommon, loaded: boolean, err
 };
 
 const WorkspaceDetailsBreadcrumbs = (workspaceName: string) => [
-  { name: 'Workspaces', path: '/workspaces' },
-  { name: 'Workspace Details', path: workspaceName ? `/workspaces/${workspaceName}` : '' },
+  { name: 'Workspaces', path: ROUTES.workspaces },
+  { name: 'Workspace Details', path: workspaceName ? `${ROUTES.workspaces}/${workspaceName}` : '' },
 ];
 
 const WorkspaceActionMenu = (setDeleteModalOpen: (isOpen: boolean) => void) => ({
   actions: [
     {
-      id: '2',
+      id: 'delete',
       label: 'Delete workspace',
       cta: {
         callback: () => {
@@ -106,7 +107,7 @@ const WorkspaceDetails = () => {
         isOpen={deleteModalOpen}
         closeModal={() => setDeleteModalOpen(false)}
         onDelete={() => {
-          navigate('/workspaces');
+          navigate(ROUTES.workspaces);
         }}
       />
       <DetailsPage

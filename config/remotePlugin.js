@@ -1,6 +1,10 @@
 const { resolve } = require('path');
 const packageInfo = require('../package.json');
 
+const ROUTES = {
+  workspaces: '/workspaces',
+};
+
 module.exports = {
   pluginMetadata: {
     name: packageInfo.name,
@@ -14,7 +18,7 @@ module.exports = {
     {
       type: 'core.page/route',
       properties: {
-        path: '/workspaces',
+        path: ROUTES.workspaces,
         component: {
           $codeRef: 'init',
         },
@@ -23,7 +27,7 @@ module.exports = {
     {
       type: 'core.page/route',
       properties: {
-        path: '/workspaces/:workspaceName',
+        path: `${ROUTES.workspaces}/:workspaceName`,
         component: {
           $codeRef: 'details',
         },
@@ -32,7 +36,7 @@ module.exports = {
     {
       type: 'core.navigation/href',
       properties: {
-        href: '/workspaces',
+        href: ROUTES.workspaces,
         name: 'Workspaces',
       },
     },
