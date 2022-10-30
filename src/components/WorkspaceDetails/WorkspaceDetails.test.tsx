@@ -45,7 +45,7 @@ describe('Workspace Details Page', () => {
     history.push('/workspaces/demo-workspace');
   });
 
-  it('Call to get information is made', async () => {
+  test('Call to get information is made', async () => {
     k8sGetResourceMock.mockResolvedValue(workspaceData);
     render(
       <Router location={history.location} navigator={history}>
@@ -63,7 +63,7 @@ describe('Workspace Details Page', () => {
   });
 
   describe('Overview tab', () => {
-    it('Data is displayed', async () => {
+    test('Data is displayed', async () => {
       k8sGetResourceMock.mockResolvedValue(workspaceData);
       const { container } = render(
         <Router location={history.location} navigator={history}>
@@ -81,7 +81,7 @@ describe('Workspace Details Page', () => {
       expect(screen.getAllByText('demo-workspace').length).not.toEqual(0);
     });
 
-    it('Is accessible', async () => {
+    test('Is accessible', async () => {
       k8sGetResourceMock.mockResolvedValue(workspaceData);
       const { container } = render(
         <Router location={history.location} navigator={history}>
@@ -95,7 +95,7 @@ describe('Workspace Details Page', () => {
       expect(results).toHaveNoViolations();
     });
 
-    it('Error is displayed', async () => {
+    test('Error is displayed', async () => {
       const err = { message: 'Sample Error', json: { code: 123 } };
       k8sGetResourceMock.mockRejectedValue(err);
 

@@ -22,28 +22,28 @@ describe('Delete workspace modal', () => {
     closeModalMock.mockClear();
   });
 
-  it('Modal opens when isOpen is set to true', () => {
+  test('Modal opens when isOpen is set to true', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
-  it('Modal is not visible when isOpen is set to false', () => {
+  test('Modal is not visible when isOpen is set to false', () => {
     rerender(<WorkspaceDeleteModal workspaceName="my-workspace" isOpen={false} closeModal={closeModalMock} />);
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('Modal is accessible', async () => {
+  test('Modal is accessible', async () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     const results = await axe(screen.getByRole('dialog'));
     expect(results).toHaveNoViolations();
   });
 
   describe('Delete button is disabled if entered name does not match', () => {
-    it('Entered name is empty', () => {
+    test('Entered name is empty', () => {
       expect(screen.getByRole('textbox')).toHaveValue('');
       expect(screen.getByText('Delete')).toBeDisabled();
     });
 
-    it('Entered name is incorrect and not empty', () => {
+    test('Entered name is incorrect and not empty', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'notCorrectName' },
       });
@@ -56,7 +56,7 @@ describe('Delete workspace modal', () => {
       expect(screen.getByText('Delete')).toBeDisabled();
     });
 
-    it('Entered name matches and delete button is enabled', () => {
+    test('Entered name matches and delete button is enabled', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'my-workspace' },
       });
@@ -64,7 +64,7 @@ describe('Delete workspace modal', () => {
     });
   });
 
-  it('Modal entered name field is cleared when modal is re-opened', () => {
+  test('Modal entered name field is cleared when modal is re-opened', () => {
     fireEvent.change(screen.getByRole('textbox'), {
       target: { value: 'notCorrectName' },
     });
@@ -78,7 +78,7 @@ describe('Delete workspace modal', () => {
     expect(screen.getByRole('textbox')).toHaveValue('');
   });
 
-  it('Error is shown on modal if delete fails', async () => {
+  test('Error is shown on modal if delete fails', async () => {
     const err = new Error('test error');
     k8sDeleteResourceMock.mockRejectedValue(err);
 
@@ -109,7 +109,7 @@ describe('Delete workspace modal', () => {
     expect(results).toHaveNoViolations();
   });
 
-  it('closeModal is called on successful delete', async () => {
+  test('closeModal is called on successful delete', async () => {
     k8sDeleteResourceMock.mockResolvedValue({});
     fireEvent.change(screen.getByRole('textbox'), {
       target: { value: 'my-workspace' },
@@ -133,13 +133,13 @@ describe('Delete workspace modal', () => {
     await waitFor(() => expect(closeModalMock).toHaveBeenCalledTimes(1));
   });
 
-  it('Clicking cancel button calls closeModal', () => {
+  test('Clicking cancel button calls closeModal', () => {
     fireEvent.click(screen.getByText('Cancel'));
     expect(k8sDeleteResourceMock).not.toHaveBeenCalled();
     expect(closeModalMock).toHaveBeenCalledTimes(1);
   });
 
-  it('Clicking cancel "x" calls closeModal', () => {
+  test('Clicking cancel "x" calls closeModal', () => {
     fireEvent.click(screen.getByLabelText('Close'));
     expect(k8sDeleteResourceMock).not.toHaveBeenCalled();
     expect(closeModalMock).toHaveBeenCalledTimes(1);

@@ -56,7 +56,7 @@ describe('Add Workspace modal', () => {
     );
   });
 
-  it('Modal opens when user clicks on Create workspace button', () => {
+  test('Modal opens when user clicks on Create workspace button', () => {
     // Sanity check to see if component loaded
     expect(screen.getByText('Create workspace')).toBeInTheDocument();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -64,7 +64,7 @@ describe('Add Workspace modal', () => {
     openModal();
   });
 
-  it('Is accessible', async () => {
+  test('Is accessible', async () => {
     openModal();
     // Button is accessible
     let results = await axe(screen.getByText('Create workspace'));
@@ -75,7 +75,7 @@ describe('Add Workspace modal', () => {
     expect(results).toHaveNoViolations();
   });
 
-  it('Create button is disabled and name field is empty when modal opens', () => {
+  test('Create button is disabled and name field is empty when modal opens', () => {
     openModal();
 
     expect(screen.getByRole('textbox')).toHaveValue('');
@@ -83,7 +83,7 @@ describe('Add Workspace modal', () => {
   });
 
   describe('Create button is disabled if name is not valid', () => {
-    it('Name starts with a dash', () => {
+    test('Name starts with a dash', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -92,7 +92,7 @@ describe('Add Workspace modal', () => {
       expect(screen.getByText('Create')).toBeDisabled();
     });
 
-    it('Name starts with an invalid character', () => {
+    test('Name starts with an invalid character', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -101,7 +101,7 @@ describe('Add Workspace modal', () => {
       expect(screen.getByText('Create')).toBeDisabled();
     });
 
-    it('Name starts with a capital letter', () => {
+    test('Name starts with a capital letter', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -110,7 +110,7 @@ describe('Add Workspace modal', () => {
       expect(screen.getByText('Create')).toBeDisabled();
     });
 
-    it('Name has invalid character in the middle', () => {
+    test('Name has invalid character in the middle', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -119,7 +119,7 @@ describe('Add Workspace modal', () => {
       expect(screen.getByText('Create')).toBeDisabled();
     });
 
-    it('Name has  a capital letter in the middle', () => {
+    test('Name has  a capital letter in the middle', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -128,7 +128,7 @@ describe('Add Workspace modal', () => {
       expect(screen.getByText('Create')).toBeDisabled();
     });
 
-    it('Name ends with a dash', () => {
+    test('Name ends with a dash', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -137,7 +137,7 @@ describe('Add Workspace modal', () => {
       expect(screen.getByText('Create')).toBeDisabled();
     });
 
-    it('Name ends with an invalid character', () => {
+    test('Name ends with an invalid character', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -146,7 +146,7 @@ describe('Add Workspace modal', () => {
       expect(screen.getByText('Create')).toBeDisabled();
     });
 
-    it('Name ends with a capital letter', () => {
+    test('Name ends with a capital letter', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -156,7 +156,7 @@ describe('Add Workspace modal', () => {
     });
   });
   describe('Create button is enabled with a valid name', () => {
-    it('Name starts with a number', () => {
+    test('Name starts with a number', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -165,7 +165,7 @@ describe('Add Workspace modal', () => {
       expect(screen.getByText('Create')).not.toBeDisabled();
     });
 
-    it('Name starts with a lower case letter', () => {
+    test('Name starts with a lower case letter', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -174,7 +174,7 @@ describe('Add Workspace modal', () => {
       expect(screen.getByText('Create')).not.toBeDisabled();
     });
 
-    it('Name has a dash in the middle', () => {
+    test('Name has a dash in the middle', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -183,7 +183,7 @@ describe('Add Workspace modal', () => {
       expect(screen.getByText('Create')).not.toBeDisabled();
     });
 
-    it('Name ends with a number', () => {
+    test('Name ends with a number', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -192,7 +192,7 @@ describe('Add Workspace modal', () => {
       expect(screen.getByText('Create')).not.toBeDisabled();
     });
 
-    it('Name ends with a lower case letter', () => {
+    test('Name ends with a lower case letter', () => {
       openModal();
 
       fireEvent.change(screen.getByRole('textbox'), {
@@ -202,7 +202,7 @@ describe('Add Workspace modal', () => {
     });
   });
 
-  it('Create button is disabled if name matches an existing name', () => {
+  test('Create button is disabled if name matches an existing name', () => {
     openModal();
 
     fireEvent.change(screen.getByRole('textbox'), {
@@ -211,7 +211,7 @@ describe('Add Workspace modal', () => {
     expect(screen.getByText('Create')).toBeDisabled();
   });
 
-  it('Error is shown on modal if post fails', async () => {
+  test('Error is shown on modal if post fails', async () => {
     const err = new Error('test error');
 
     k8sCreateResourceMock.mockRejectedValue(err);
@@ -255,7 +255,7 @@ describe('Add Workspace modal', () => {
     expect(results).toHaveNoViolations();
   });
 
-  it('Modal closes on successfully post', async () => {
+  test('Modal closes on successfully post', async () => {
     k8sCreateResourceMock.mockResolvedValue({
       metadata: {
         name: '1workspace',
@@ -329,7 +329,7 @@ describe('Add Workspace modal', () => {
     expect(screen.getByRole('alert')).toBeInTheDocument();
   });
 
-  it('Clicking cancel button closes modal', () => {
+  test('Clicking cancel button closes modal', () => {
     openModal();
     fireEvent.click(screen.getByText('Cancel'));
     expect(k8sCreateResourceMock).not.toHaveBeenCalled();
@@ -337,7 +337,7 @@ describe('Add Workspace modal', () => {
     expect(mockedUsedNavigate).not.toHaveBeenCalled();
   });
 
-  it('Clicking cancel "x" closes modal', () => {
+  test('Clicking cancel "x" closes modal', () => {
     openModal();
     fireEvent.click(screen.getByLabelText('Close'));
     expect(k8sCreateResourceMock).not.toHaveBeenCalled();
