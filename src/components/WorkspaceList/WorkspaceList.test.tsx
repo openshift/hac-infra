@@ -2,13 +2,10 @@ import * as React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { BrowserRouter, Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
-import { toHaveNoViolations, axe } from 'jest-axe';
-import '@testing-library/jest-dom';
+import { axe } from 'jest-axe';
 import { WorkspaceList } from './index';
 import type { K8sResourceCommon } from '@openshift/dynamic-plugin-sdk-utils';
 import { useK8sWatchResource } from '@openshift/dynamic-plugin-sdk-utils';
-
-expect.extend(toHaveNoViolations);
 
 jest.mock('@openshift/dynamic-plugin-sdk-utils', () => ({
   ...jest.requireActual('@openshift/dynamic-plugin-sdk-utils'),

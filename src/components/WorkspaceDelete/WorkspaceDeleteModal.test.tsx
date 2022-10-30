@@ -1,11 +1,8 @@
 import * as React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { axe, toHaveNoViolations } from 'jest-axe';
+import { axe } from 'jest-axe';
 import { k8sDeleteResource } from '@openshift/dynamic-plugin-sdk-utils';
 import WorkspaceDeleteModal from './WorkspaceDeleteModal';
-
-expect.extend(toHaveNoViolations);
 
 jest.mock('@openshift/dynamic-plugin-sdk-utils', () => ({
   ...jest.requireActual('@openshift/dynamic-plugin-sdk-utils'),

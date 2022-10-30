@@ -1,10 +1,7 @@
 import * as React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
-import { toHaveNoViolations, axe } from 'jest-axe';
-expect.extend(toHaveNoViolations);
-
+import { axe } from 'jest-axe';
 import type { K8sResourceCommon } from '@openshift/dynamic-plugin-sdk-utils';
 import { k8sCreateResource } from '@openshift/dynamic-plugin-sdk-utils';
 import WorkspaceAddButton from './WorkspaceAddButton';
