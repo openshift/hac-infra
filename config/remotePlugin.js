@@ -7,6 +7,7 @@ module.exports = {
     version: packageInfo.version,
     exposedModules: {
       init: resolve(__dirname, '../src/pages/PluginEntry/PluginEntry.tsx'),
+      details: resolve(__dirname, '../src/pages/WorkspaceDetails/WorkspaceDetails.tsx'),
     },
   },
   extensions: [
@@ -16,6 +17,15 @@ module.exports = {
         path: '/workspaces',
         component: {
           $codeRef: 'init',
+        },
+      },
+    },
+    {
+      type: 'core.page/route',
+      properties: {
+        path: '/workspaces/:workspaceName',
+        component: {
+          $codeRef: 'details',
         },
       },
     },

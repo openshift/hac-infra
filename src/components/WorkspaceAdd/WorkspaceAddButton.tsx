@@ -14,6 +14,7 @@ import {
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
 import type { K8sModelCommon } from '@openshift/dynamic-plugin-sdk-utils';
 import { k8sCreateResource, K8sResourceCommon } from '@openshift/dynamic-plugin-sdk-utils';
+import { useNavigate } from 'react-router-dom';
 
 const workspaceTypes = ['universal']; // There isn't an api endpoint to get the list of workspace types yet.
 const workspaceTypeDefault = workspaceTypes[0];
@@ -40,6 +41,8 @@ const isUniqueName = (workspaceName: string, existingWorkspaces: K8sResourceComm
   !existingWorkspaces.some((workspace) => workspace.metadata.name === workspaceName);
 
 const WorkspaceAddButton = ({ workspaces }: { workspaces: K8sResourceCommon[] }) => {
+  const navigate = useNavigate();
+
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [workspaceName, setWorkspaceName] = React.useState('');
   const [workspaceType, setWorkspaceType] = React.useState(workspaceTypeDefault);
@@ -61,12 +64,12 @@ const WorkspaceAddButton = ({ workspaces }: { workspaces: K8sResourceCommon[] })
       },
     })
       .then((response) => {
-        // eslint-disable-next-line no-console
-        console.log(
-          // @ts-ignore
-          `You have created a ${response.spec.type.name} workspace with a name of ${response.metadata.name} and an UUID of ${response.metadata.uid}`,
-        );
-        setIsModalOpen(!isModalOpen);
+        if (response?.metadata?.name) {
+          setIsModalOpen(!isModalOpen);
+          navigate(`${response.metadata.name}`);
+        } else {
+          throw new Error('Workspace successfully added. Unable to direct to details page.');
+        }
       })
       .catch((err) => {
         setError(err.message);

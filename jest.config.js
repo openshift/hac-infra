@@ -11,4 +11,5 @@ module.exports = {
     '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
   },
   transformIgnorePatterns: ['/node_modules/(?!@openshift|@patternfly|@redhat-cloud-services|lodash-es)'],
+  setupFilesAfterEnv: ['<rootDir>/setup-react.ts'],
 };
