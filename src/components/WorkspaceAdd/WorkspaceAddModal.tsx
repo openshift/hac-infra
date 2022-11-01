@@ -104,19 +104,29 @@ const WorkspaceAddModal = ({ workspaces, isOpen, onClose }: { workspaces: K8sRes
       title="Create a workspace"
       isOpen={isOpen}
       onClose={() => onClose()}
-      actions={[
-        !error ? (
-          <Button key="confirm" variant="primary" onClick={createWorkspace} isDisabled={isValidName !== ValidatedOptions.success}>
-            Create
-          </Button>
-        ) : null,
-        <Button key="cancel" variant="link" onClick={() => onClose()}>
-          {!error ? 'Cancel' : 'Close'}
-        </Button>,
-      ]}
+      actions={
+        !loading
+          ? [
+              !error ? (
+                <Button
+                  key="confirm"
+                  variant="primary"
+                  onClick={createWorkspace}
+                  isDisabled={isValidName !== ValidatedOptions.success}
+                  data-testid="createWorkspaceButton"
+                >
+                  Create
+                </Button>
+              ) : null,
+              <Button key="cancel" variant="link" onClick={() => onClose()} data-testid="cancelWorkspaceButton">
+                {!error ? 'Cancel' : 'Close'}
+              </Button>,
+            ]
+          : []
+      }
     >
       {error ? <Alert variant="danger" isInline title={error} role="alert" titleHeadingLevel="h2" /> : null}
-      {loading ? 'Loading ....' : null}
+      {loading ? <div data-testid="loading">Loading ....</div> : null}
       {!error && !loading ? (
         <Form>
           <FormGroup

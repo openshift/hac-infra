@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
-import { toHaveNoViolations, axe } from 'jest-axe';
-expect.extend(toHaveNoViolations);
+import { axe } from 'jest-axe';
 
 import { MemoryRouter } from 'react-router-dom';
 
@@ -65,7 +64,7 @@ describe('Add Workspace modal', () => {
 
   test('Create button is disabled and name field is empty when modal opens', () => {
     expect(screen.getByRole('textbox')).toHaveValue('');
-    expect(screen.getByText('Create')).toBeDisabled();
+    expect(screen.getByTestId('createWorkspaceButton')).toBeDisabled();
   });
 
   describe('Create button is disabled if name is not valid', () => {
@@ -73,92 +72,93 @@ describe('Add Workspace modal', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: '-workspace' },
       });
-      expect(screen.getByText('Create')).toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).toBeDisabled();
     });
 
     test('Name starts with an invalid character', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: '$workspace' },
       });
-      expect(screen.getByText('Create')).toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).toBeDisabled();
     });
 
     test('Name starts with a capital letter', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'Workspace' },
       });
-      expect(screen.getByText('Create')).toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).toBeDisabled();
     });
 
     test('Name has invalid character in the middle', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'work&space' },
       });
-      expect(screen.getByText('Create')).toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).toBeDisabled();
     });
 
     test('Name has  a capital letter in the middle', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'workSpace' },
       });
-      expect(screen.getByText('Create')).toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).toBeDisabled();
     });
 
     test('Name ends with a dash', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'workspace-' },
       });
-      expect(screen.getByText('Create')).toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).toBeDisabled();
     });
 
     test('Name ends with an invalid character', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'workspace$' },
       });
-      expect(screen.getByText('Create')).toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).toBeDisabled();
     });
 
     test('Name ends with a capital letter', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'workspacE' },
       });
-      expect(screen.getByText('Create')).toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).toBeDisabled();
     });
   });
+
   describe('Create button is enabled with a valid name', () => {
     test('Name starts with a number', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: '1workspace' },
       });
-      expect(screen.getByText('Create')).not.toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).not.toBeDisabled();
     });
 
     test('Name starts with a lower case letter', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'workspace' },
       });
-      expect(screen.getByText('Create')).not.toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).not.toBeDisabled();
     });
 
     test('Name has a dash in the middle', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'work-space' },
       });
-      expect(screen.getByText('Create')).not.toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).not.toBeDisabled();
     });
 
     test('Name ends with a number', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: '1workspace1' },
       });
-      expect(screen.getByText('Create')).not.toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).not.toBeDisabled();
     });
 
     test('Name ends with a lower case letter', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: '1workspace' },
       });
-      expect(screen.getByText('Create')).not.toBeDisabled();
+      expect(screen.getByTestId('createWorkspaceButton')).not.toBeDisabled();
     });
   });
 
@@ -166,7 +166,7 @@ describe('Add Workspace modal', () => {
     fireEvent.change(screen.getByRole('textbox'), {
       target: { value: 'demo-ws2' },
     });
-    expect(screen.getByText('Create')).toBeDisabled();
+    expect(screen.getByTestId('createWorkspaceButton')).toBeDisabled();
   });
 
   test('Error is shown on modal if post fails', async () => {
@@ -174,11 +174,13 @@ describe('Add Workspace modal', () => {
 
     k8sCreateResourceMock.mockRejectedValue(err);
 
+    expect(screen.getByTestId('cancelWorkspaceButton')).toHaveTextContent('Cancel');
+
     fireEvent.change(screen.getByRole('textbox'), {
       target: { value: '1workspace' },
     });
 
-    fireEvent.click(screen.getByText('Create'));
+    fireEvent.click(screen.getByTestId('createWorkspaceButton'));
 
     expect(k8sCreateResourceMock).toHaveBeenCalledTimes(1);
     expect(k8sCreateResourceMock).toHaveBeenCalledWith({
@@ -203,8 +205,12 @@ describe('Add Workspace modal', () => {
     });
 
     await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
-    expect(screen.queryByRole('dialog')).toBeInTheDocument();
+
     expect(mockedUsedNavigate).not.toHaveBeenCalled();
+
+    // Check buttons are in correct state
+    expect(screen.queryByTestId('createWorkspaceButton')).not.toBeInTheDocument();
+    expect(screen.getByTestId('cancelWorkspaceButton')).toHaveTextContent('Close');
 
     // Check accessibility of modal with alert
     const results = await axe(screen.queryByRole('dialog'));
@@ -253,6 +259,36 @@ describe('Add Workspace modal', () => {
     });
     await waitFor(() => expect(onCloseMock).toBeCalledTimes(1));
     expect(mockedUsedNavigate).toHaveBeenCalledWith('1workspace');
+  });
+
+  test('Create and cancel buttons are not available when loading', async () => {
+    k8sCreateResourceMock.mockResolvedValue({
+      metadata: {
+        name: '1workspace',
+        uid: 'my-uuid',
+      },
+      spec: {
+        type: {
+          name: 'universal',
+        },
+      },
+    });
+
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: '1workspace' },
+    });
+
+    expect(screen.getByTestId('createWorkspaceButton')).toBeInTheDocument();
+    expect(screen.getByTestId('cancelWorkspaceButton')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('createWorkspaceButton'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('loading')).toBeInTheDocument();
+      // Check to see that the buttons are not showing
+      expect(screen.queryByTestId('createWorkspaceButton')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('cancelWorkspaceButton')).not.toBeInTheDocument();
+    });
   });
 
   test('Clicking cancel button calls onClose', async () => {
