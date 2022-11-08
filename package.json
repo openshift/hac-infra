@@ -21,12 +21,13 @@
   },
   "dependencies": {
     "@patternfly/react-core": "^4.192.15",
+    "@redhat-cloud-services/frontend-components": "^3.9.11",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0"
   },
   "devDependencies": {
-    "@openshift/dynamic-plugin-sdk": "^1.0.0-alpha14",
+    "@openshift/dynamic-plugin-sdk": "^1.0.0-alpha16",
     "@openshift/dynamic-plugin-sdk-utils": "^1.0.0",
     "@openshift/dynamic-plugin-sdk-webpack": "^1.0.0-alpha10",
     "@patternfly/react-table": "^4.93.1",
